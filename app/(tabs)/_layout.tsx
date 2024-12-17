@@ -1,45 +1,67 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Octicons, FontAwesome6 } from "@expo/vector-icons";
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import HomeScreen from './index';
+import TabTwoScreen from './explore';
+
+const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+
   return (
-    <Tabs
+    <Tab.Navigator
+      initialRouteName='Main'
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].text,
+        tabBarStyle: {
+          position: "absolute",
+          // height: 80,
+          borderRadius: Platform.OS === 'ios' ? 40 : 0,
+          borderColor: "#f1f1f1",
+          borderTopColor: Platform.OS === 'ios' ? 'transparent' : "#f1f1f1",
+          shadowColor: "#000",
+          shadowOpacity: 0.15,
+          shadowOffset: {
+            width: 0,
+            height: 0,
           },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
+          shadowRadius: Platform.OS === 'ios' ? 30 : 90,
+          elevation: 10,
+          paddingTop: Platform.OS === 'ios' ? 15 : 0,
+        },
+      }}
+    >
+      <Tab.Screen
+        name="Main"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          headerShown: false,
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, focused }) => (
+            <FontAwesome6 size={20} name='house' color={color} />
+          ),
         }}
+        component={HomeScreen}
       />
-      <Tabs.Screen
+      <Tab.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          headerShown: false,
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, focused }) => (
+            <FontAwesome6 size={20} name="paper-plane" color={color} />
+          ),
         }}
+        component={TabTwoScreen}
       />
-    </Tabs>
+    </Tab.Navigator>
   );
 }
